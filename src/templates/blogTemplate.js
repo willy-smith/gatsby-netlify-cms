@@ -16,7 +16,7 @@ export default Template = ({ data }) => {
 }
 
 export const pageQuery = graphql`
-  query($slug: String!) {
+  query($path: String!) {
     markdownRemark(frontmatter: { path: { eq: $path } }) {
       html
       frontmatter {
