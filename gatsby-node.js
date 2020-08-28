@@ -1,3 +1,5 @@
+const path = require("path")
+
 exports.createPages = async ({ actions, graphql, reporter }) => {
   const { createPage } = actions
 
@@ -12,27 +14,30 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
         edges {
           node {
             frontmatter {
-              slug
+              data
+              path
+              title
             }
           }
         }
       }
     }
-  `)
+  `).then(result => {
+    // Handle errors
 
-  // Handle errors
-  if (result.errors) {
-    reporter.panicOnBuild(`Error while running GraphQL query.`)
-    return
-  }
+    if (result.errors) {
+      reporter.panicOnBuild(`Error while running GraphQL query.`)
+      return
+    }
+  })
 
   result.data.allMarkdownRemark.edges.forEach(({ node }) => {
     createPage({
-      path: node.frontmatter.slug,
+      path: node.frontmatter.path,
       component: blogPostTemplate,
       context: {
         // additional data can be passed via context
-        slug: node.frontmatter.slug,
+        path: node.frontmatter.path,
       },
     })
   })
