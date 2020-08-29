@@ -1,7 +1,19 @@
 import React from "react"
-import { graphql } from "gatsby"
+import { useStaticQuery, graphql } from "gatsby"
 
-export default Template = ({ data }) => {
+const Template = () => {
+  const data = useStaticQuery(graphql`
+    query($path: String!) {
+      markdownRemark(frontmatter: { path: { eq: $path } }) {
+        html
+        frontmatter {
+          date(formatString: "MMMM DD, YYYY")
+          path
+          title
+        }
+      }
+    }
+  `)
   const { markdownRemark } = data
   const { frontmatter, html } = markdownRemark
   return (
@@ -15,15 +27,4 @@ export default Template = ({ data }) => {
   )
 }
 
-export const pageQuery = graphql`
-  query($path: String!) {
-    markdownRemark(frontmatter: { path: { eq: $path } }) {
-      html
-      frontmatter {
-        date(formatString: "MMMM DD, YYYY")
-        path
-        title
-      }
-    }
-  }
-`
+export default Template
