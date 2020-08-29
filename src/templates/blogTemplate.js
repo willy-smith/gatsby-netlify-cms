@@ -1,30 +1,29 @@
 import React from "react"
-import { useStaticQuery, graphql } from "gatsby"
+import { graphql } from "gatsby"
 
-const Template = () => {
-  const data = useStaticQuery(graphql`
-    query($path: String!) {
-      markdownRemark(frontmatter: { path: { eq: $path } }) {
-        html
-        frontmatter {
-          date(formatString: "MMMM DD, YYYY")
-          path
-          title
-        }
-      }
-    }
-  `)
-  const { markdownRemark } = data
-  const { frontmatter, html } = markdownRemark
+const Template = ({ data }) => {
+  const post = data.markdownRemark
   return (
     <div>
       <div>
-        <h1>{frontmatter.title}</h1>
-        <h2>{frontmatter.date}</h2>
-        <div dangerouslySetInnerHTML={{ __html: html }} />
+        <h1>{post.frontmatter.title}</h1>
+        <h2>{post.frontmatter.date}</h2>
+        <div dangerouslySetInnerHTML={{ __html: post.html }} />
       </div>
     </div>
   )
 }
+
+export const query = graphql`
+  query($pagePath: String!) {
+    markdownRemark(frontmatter: { path: { eq: $pagePath } }) {
+      html
+      frontmatter {
+        path
+        title
+      }
+    }
+  }
+`
 
 export default Template
